@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Analytics Dashboard</h1>
+        <h2>Top 5 Users by Scans</h2>
+        <ul>
+            {% for user in top_users %}
+                <li>{{ user[0] }} - {{ user[1] }} scans</li>
+            {% endfor %}
+        </ul>
+        <p>Daily Scans: {{ daily_scans }}</p>
+        <p>Average Credits per User: {{ avg_credits }}</p>
+        <a href="{{ url_for('admin') }}">Back to Admin</a>
+    </div>
+</body>
+</html>

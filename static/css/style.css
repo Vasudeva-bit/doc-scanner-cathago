@@ -1,0 +1,163 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 400px;
+}
+
+h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h2, h3 {
+    color: #555;
+    margin: 15px 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input, button {
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1em;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input {
+    background: #f0f0f0;
+}
+
+input:focus {
+    background: #fff;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+button {
+    background: #ff6b6b;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff8787;
+    transform: scale(1.05);
+}
+
+a {
+    color: #4ecdc4;
+    text-decoration: none;
+    margin: 10px;
+    display: inline-block;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.flash-message {
+    color: #ff6b6b;
+    margin-top: 10px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    background: #f9f9f9;
+    margin: 5px 0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bear {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 80px;
+    background: #8b4513;
+    border-radius: 50% 50% 40% 40%;
+    z-index: 1;
+}
+
+.bear-eyes {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+}
+
+.eye {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    transition: height 0.3s ease;
+    --pupil-x: 0px;
+    --pupil-y: 0px;
+}
+
+.eye::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: #000;
+    border-radius: 50%;
+    transform: translate(calc(-50% + var(--pupil-x)), calc(-50% + var(--pupil-y)));
+    transition: transform 0.1s ease, opacity 0.3s ease;
+}
+
+.eye.closed {
+    height: 2px;
+}
+
+.eye.closed::before {
+    opacity: 0;
+}
+
+.request-item span {
+    flex-grow: 1;
+    text-align: left;
+    padding-right: 10px;
+}
+
+.action-form {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}

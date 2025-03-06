@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Matches</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Matching Documents</h1>
+        <p>Remaining Credits: {{ credits }}</p>
+        {% if matches %}
+            <h2>Top 5 Matches</h2>
+            <ul>
+                {% for match in matches %}
+                    <li>
+                        {{ match[1] }} (Distance: {{ match[2] }})
+                        <a href="{{ url_for('download_file', filename=match[1]) }}">Download</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matches found.</p>
+        {% endif %}
+        <a href="{{ url_for('upload') }}">Back to Upload</a>
+    </div>
+</body>
+</html>

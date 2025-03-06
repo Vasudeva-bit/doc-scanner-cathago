@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container dashboard">
+        <h1>Admin Dashboard</h1>
+        <div class="section">
+            <h2>Pending Credit Requests</h2>
+            <ul class="request-list">
+                {% for req in requests %}
+                    <li class="request-item">
+                        <span>{{ req[1] }} - {{ req[2] }} credits (Requested: {{ req[4] }}) | Total Requested So Far: {{ req[5] }}</span>
+                        <form method="POST" class="action-form">
+                            <input type="hidden" name="request_id" value="{{ req[0] }}">
+                            <button type="submit" name="action" value="approve" class="approve-btn">Approve</button>
+                            <button type="submit" name="action" value="deny" class="deny-btn">Deny</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Activity Logs</h2>
+            <ul class="log-list">
+                {% for log in logs %}
+                    <li class="log-item">{{ log[0] }} - {{ log[1] }}: {{ log[2] }} ({{ log[3] }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Back</a> |
+            <a href="{{ url_for('analytics') }}">Analytics</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Profile</h1>
+        <p>Username: {{ user[0] }}</p>
+        <p>Credits Available: {{ credits }}</p>
+        <p>Total Credits Requested So Far: {{ total_requested_credits }}</p>
+        <h2>Past Scans</h2>
+        <ul>
+            {% for scan in scans %}
+                <li>{{ scan[0] }} - {{ scan[1] }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('download_scans') }}"><button>Download Past Scans</button></a>
+        <h2>Request Credits</h2>
+        <form method="POST" action="{{ url_for('request_credits') }}">
+            <input type="number" name="credits" min="1" required>
+            <button type="submit">Request</button>
+        </form>
+        <a href="{{ url_for('index') }}">Back</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="flash-message">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

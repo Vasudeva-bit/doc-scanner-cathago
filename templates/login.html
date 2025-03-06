@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="bear">
+            <div class="bear-eyes">
+                <div class="eye left-eye"></div>
+                <div class="eye right-eye"></div>
+            </div>
+        </div>
+        <h1>Login</h1>
+        <form method="POST" class="login-form">
+            <input type="text" name="username" placeholder="Username" required id="username">
+            <input type="password" name="password" placeholder="Password" required id="password">
+            <button type="submit">Login</button>
+        </form>
+        <a href="{{ url_for('register') }}">Register</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="flash-message">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

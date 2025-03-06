@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Document</h1>
+        <p>Remaining Credits: {{ credits }}</p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".txt" required>
+            <button type="submit">Upload</button>
+        </form>
+        {% if doc_id %}
+            <a href="{{ url_for('matchs', doc_id=doc_id) }}"><button>Match</button></a>
+        {% endif %}
+        <a href="{{ url_for('profile') }}">Back to Profile</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="flash-message">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

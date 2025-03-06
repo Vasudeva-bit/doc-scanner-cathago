@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Document Scanner</h1>
+        <a href="{{ url_for('profile') }}">Profile</a> |
+        <a href="{{ url_for('upload') }}">Upload Document</a> |
+        <a href="{{ url_for('logout') }}">Logout</a>
+        {% if session['role'] == 'admin' %}
+            | <a href="{{ url_for('admin') }}">Admin Dashboard</a>
+        {% endif %}
+    </div>
+</body>
+</html>
