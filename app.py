@@ -2,6 +2,7 @@ import hashlib
 import os
 import sqlite3
 from datetime import datetime, timedelta
+from io import BytesIO
 
 import google.generativeai as genai
 import requests
@@ -176,7 +177,7 @@ def profile():
     c.execute("SELECT username, credits FROM users WHERE id = ?", (session["user_id"],))
     user = c.fetchone()
     c.execute(
-        "SELECT filename, upload_date FROM documents WHERE user_id = ?",
+        "SELECT filename, upload_date FROM documents WHERE user_id = ? ORDER BY upload_date DESC LIMIT 5",
         (session["user_id"],),
     )
     scans = c.fetchall()
@@ -208,13 +209,10 @@ def download_scans():
     scans = c.fetchall()
     conn.close()
 
-    # generate text file content
+    # generate text file contentt
     content = "Past Scans:\n"
     for scan in scans:
         content += f"Filename: {scan[0]}, Uploaded: {scan[1]}\n"
-
-    # servs as downloadable file
-    from io import BytesIO
 
     buffer = BytesIO(content.encode("utf-8"))
     buffer.seek(0)
@@ -238,10 +236,10 @@ def request_credits():
         (session["user_id"], requested_credits, datetime.now().isoformat()),
     )
     conn.commit()
+    conn.close()
     log_action(
         session["user_id"], "credit_request", f"Requested {requested_credits} credits"
     )
-    conn.close()
     flash("Credit request submitted.")
     return redirect(url_for("profile"))
 
@@ -272,6 +270,8 @@ def admin():
                 "SELECT requested_credits FROM credit_requests WHERE id = ?",
                 (request_id,),
             ).fetchone()[0]
+            conn.commit()
+            conn.close()
             log_action(
                 user_id, "credit_approved", f"Approved {requested_credits} credits"
             )
@@ -283,9 +283,12 @@ def admin():
             user_id = c.execute(
                 "SELECT user_id FROM credit_requests WHERE id = ?", (request_id,)
             ).fetchone()[0]
+            conn.commit()
+            conn.close()
             log_action(user_id, "credit_denied", "Request denied")
-        conn.commit()
 
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
     # fethcing pending requests with total requested credits per user
     c.execute(
         """
@@ -299,7 +302,7 @@ def admin():
     reqts = c.fetchall()
 
     c.execute(
-        "SELECT u.username, l.action, l.details, l.timestamp FROM logs l JOIN users u ON l.user_id = u.id ORDER BY l.timestamp DESC LIMIT 50"
+        "SELECT u.username, l.action, l.details, l.timestamp FROM logs l JOIN users u ON l.user_id = u.id ORDER BY l.timestamp DESC LIMIT 5"
     )
     logs = c.fetchall()
     conn.close()
@@ -370,13 +373,45 @@ def upload():
                 (session["user_id"],),
             )
             conn.commit()
+            conn.close()
             doc_id = c.lastrowid
             log_action(session["user_id"], "scan", f"Uploaded {filename}")
             flash("Document uploaded successfully.")
         else:
             flash("Please upload a .txt file.")
-    conn.close()
+            conn.close()
     return render_template("upload.html", credits=credits, doc_id=doc_id)
+
+
+@app.route("/download_logs")
+def download_logs():
+    if "role" not in session or session["role"] != "admin":
+        return redirect(url_for("index"))
+
+    conn = sqlite3.connect(
+        os.path.join(os.path.dirname(__file__), "database.db"), timeout=10
+    )
+    conn.execute("PRAGMA busy_timeout = 10000")
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT u.username, l.action, l.details, l.timestamp FROM logs l JOIN users u ON l.user_id = u.id ORDER BY l.timestamp DESC"
+    )
+    all_logs = c.fetchall()
+    conn.close()
+
+    content = "Activity Logs:\n"
+    for log in all_logs:
+        content += f"{log[0]} - {log[1]}: {log[2]} ({log[3]})\n"
+
+    buffer = BytesIO(content.encode("utf-8"))
+    buffer.seek(0)
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="activity_logs.txt",
+        mimetype="text/plain",
+    )
 
 
 @app.route("/match/<int:doc_id>", methods=["GET"])
@@ -446,5 +481,6 @@ def analytics():
 
 if __name__ == "__main__":
     init_db()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(debug=True)
+    # port = int(os.environ.get("PORT", 5000))
+    # app.run(host="0.0.0.0", port=port, debug=False)

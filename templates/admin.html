@@ -24,12 +24,13 @@
             </ul>
         </div>
         <div class="section">
-            <h2>Activity Logs</h2>
+            <h2>Activity Logs (Last 5)</h2>
             <ul class="log-list">
                 {% for log in logs %}
                     <li class="log-item">{{ log[0] }} - {{ log[1] }}: {{ log[2] }} ({{ log[3] }})</li>
                 {% endfor %}
             </ul>
+            <a href="{{ url_for('download_logs') }}"><button>Download All Logs</button></a>
         </div>
         <div class="nav-links">
             <a href="{{ url_for('index') }}">Back</a> |
